@@ -8,7 +8,7 @@
 //!
 //! ```
 //! [dependencies]
-//! include-transformed = "0.1"
+//! include-transformed = "0.2"
 //! ```
 //!
 //! # Requirements

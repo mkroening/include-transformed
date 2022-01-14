@@ -16,7 +16,7 @@ The original purpose of this project was including assembled application process
 
 ```
 [dependencies]
-include-transformed = "0.1"
+include-transformed = "0.2"
 ```
 
 # Requirements
