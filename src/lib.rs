@@ -57,7 +57,7 @@ macro_rules! expand_macro_input {
 
 fn include_transformed(
     input: proc_macro::TokenStream,
-    transform: impl FnOnce(&Path, &Path) -> Command,
+    transform: impl FnOnce(&Path, &Path) -> Result<(), proc_macro::TokenStream>,
 ) -> proc_macro::TokenStream {
     let input = expand_macro_input!(input);
     let file = parse_macro_input!(input as LitStr);
@@ -67,8 +67,9 @@ fn include_transformed(
     src.set_file_name(file.value());
     let mut dst = NamedTempFile::new().unwrap();
 
-    let status = transform(src.as_path(), dst.path()).status().unwrap();
-    assert!(status.success());
+    if let Err(output) = transform(src.as_path(), dst.path()) {
+        return output;
+    }
 
     let output = {
         let mut buf = Vec::new();
@@ -76,6 +77,27 @@ fn include_transformed(
         Literal::byte_string(&buf)
     };
     proc_macro::TokenStream::from(proc_macro::TokenTree::from(output))
+}
+
+macro_rules! bail {
+    ($($arg:tt)*) => {{
+        let msg = format!($($arg)*);
+        let compile_error = quote! {
+            compile_error!(#msg)
+        };
+        return Err(proc_macro::TokenStream::from(compile_error));
+    }};
+}
+
+fn run(command: &mut Command, program: &str) -> Result<(), proc_macro::TokenStream> {
+    let status = match command.status() {
+        Ok(status) => status,
+        Err(err) => bail!("Failed to execute {program}: {err}"),
+    };
+    if !status.success() {
+        bail!("{program} finished with: {status}");
+    }
+    Ok(())
 }
 
 /// Assembles a file with [NASM] into raw binary and includes the output as a
@@ -98,13 +120,10 @@ fn include_transformed(
 /// [NASM]: https://www.nasm.us/
 #[proc_macro]
 pub fn include_nasm_bin(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    include_transformed(input, |src_path, dst_path| {
-        let mut nasm = Command::new("nasm");
-        nasm.arg("-f")
-            .arg("bin")
-            .arg(src_path)
-            .arg("-o")
-            .arg(dst_path);
-        nasm
+    include_transformed(input, |src, dst| {
+        let program = "nasm";
+        let mut command = Command::new(program);
+        command.arg("-f").arg("bin").arg(src).arg("-o").arg(dst);
+        run(&mut command, program)
     })
 }
