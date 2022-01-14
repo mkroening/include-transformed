@@ -38,8 +38,7 @@ fn simulate_inclusion(file: &LitStr) -> Result<(), proc_macro::ExpandError> {
     let src = quote! {
         include_bytes!(#file)
     };
-    let _ = proc_macro::TokenStream::from(src).expand_expr()?;
-    Ok(())
+    proc_macro::TokenStream::from(src).expand_expr().map(drop)
 }
 
 macro_rules! expand_macro_input {
