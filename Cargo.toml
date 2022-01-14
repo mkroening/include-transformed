@@ -1,0 +1,17 @@
+[package]
+name = "include-transformed"
+version = "0.1.0"
+authors = ["Martin Kröning <mkroening@posteo.net>"]
+edition = "2021"
+repository = "https://github.com/mkroening/include-transformed"
+license = "MIT OR Apache-2.0"
+description = "Include transformed files at compile time."
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = "1.0"
+tempfile = "3"
