@@ -6,6 +6,8 @@ edition = "2021"
 repository = "https://github.com/mkroening/include-transformed"
 license = "MIT OR Apache-2.0"
 description = "Include transformed files at compile time."
+keywords = ["include", "nasm"]
+categories = ["development-tools::build-utils"]
 
 [lib]
 proc-macro = true
