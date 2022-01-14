@@ -10,7 +10,7 @@
 //! [dependencies]
 //! include-transformed = "0.1"
 //! ```
-//! 
+//!
 //! # Requirements
 //!
 //! This project depends on the unstable features `proc_macro_span` [#54725] and
