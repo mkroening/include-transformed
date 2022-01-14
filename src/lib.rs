@@ -112,9 +112,14 @@ fn run(command: &mut Command, program: &str) -> Result<(), proc_macro::TokenStre
 ///
 /// # Examples
 ///
+/// Assume there is a file 'boot.asm' in the same directory as 'main.rs'.
+///
 /// ```ignore
 /// let boot_code = include_nasm_bin!("boot.asm");
 /// ```
+///
+/// This code is equivalent to running `nasm -f bin boot.asm -o boot` and
+/// including `boot` via [`include_bytes!`].
 ///
 /// [NASM]: https://www.nasm.us/
 #[proc_macro]
