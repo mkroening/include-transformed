@@ -6,7 +6,7 @@
 
 Macros for including transformed files at compile time.
 
-The macros include a file similar to [`include_bytes!`], but transform the data before inclusion (e.g. runs an assembler).
+The macros include a file similar to [`include_bytes!`], but transform the data before inclusion. The transformation could be, for example, assembling assembly code to machine code ([`include_nasm_bin!`]).
 
 The original purpose of this project was including assembled application processor initialization code in [libhermit-rs] using [`include_nasm_bin!`].
 
